@@ -24,7 +24,24 @@ const { auth } = require('./middleware/auth')
 const { admin } = require('./middleware/admin')
 //Routes//
 
-//Product//
+
+//api/product/articles?sortBy=sold&order=desc&limit=100&skip=5
+app.get('/api/product/articles',(req,res)=>{
+    let order= req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = req.query.limit ? parseInt(req.query.limit) : 100
+
+    Product.find()
+    .populate('brand')
+    .populate('wood')
+    .sort([[sortBy,order]])
+    .limit(limit)
+    .exec((err, articles)=>{
+        if(err) return res.status(400).send(err)
+        res.status(200).send(articles)
+    })
+})
+//Product//api/product/article_by_id?id=DFHH455FG,RGSHJKKBFD45,FGHDDRT4544&type=single
 app.get('/api/product/article_by_id',(req,res)=>{
     let type = req.query.type
     let items = req.query.id
