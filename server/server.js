@@ -13,13 +13,25 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-//+++++++Models++++++++//
+//Models//
 const { User } = require('./models/user')
+const { Brand } = require('./models/brand')
 
-//++++++Middleware++++++//
+//Middleware//
 const { auth } = require('./middleware/auth')
-//+++++++Routes++++++++//
-//1111111111USERS1111111//
+//Routes//
+//Brand//
+app.post('/api/product/brand',auth,(req,res)=>{
+    const brand = new Brand(req.body)
+    brand.save((err, doc)=>{
+        if(err) return res.json({success: false, err})
+        res.status(200).json({
+            success: true,
+            brand: doc
+        })
+    })
+})
+//USERS//
 app.get('/api/users/auth', auth, (req, res) => {
     res.status(200).json({ 
         isAdmin: req.user.role === 0 ? false : true,
